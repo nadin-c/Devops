@@ -2,19 +2,18 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "my-docker-image"
+        IMAGE_NAME = "nadinc/docker"          // Replace with your Docker Hub username and image name
         TAG = "latest"
         CONTAINER_NAME = "my-container"
         PORT = "8080"
-        DOCKER_HUB_USERNAME = "nadinc"    // Add Docker Hub username
-        DOCKER_HUB_PASSWORD = "Nadin@2005"    // Add Docker Hub password
     }
 
     stages {
+        
         stage('Clone Repository') {
             steps {
                 echo "Cloning GitHub repository..."
-                git 'https://github.com/nadin-c/Devops.git'
+                git 'https://github.com/nadin-c/Devops.git'  // Replace with your repo URL
             }
         }
 
@@ -26,17 +25,20 @@ pipeline {
             }
         }
 
-        // ✅ Add Docker Hub Push Stage
-        stage('Push to Docker Hub') {
+        stage('Login to Docker Hub') {
             steps {
-                echo "Logging in to Docker Hub..."
-                sh 'docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD'
+                echo "Logging into Docker Hub..."
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
+                }
+            }
+        }
 
-                echo "Tagging Docker image..."
-                sh 'docker tag $IMAGE_NAME:$TAG $DOCKER_HUB_USERNAME/$IMAGE_NAME:$TAG'
-
+        stage('Push Docker Image') {
+            steps {
                 echo "Pushing Docker image to Docker Hub..."
-                sh 'docker push $DOCKER_HUB_USERNAME/$IMAGE_NAME:$TAG'
+                sh "docker tag $IMAGE_NAME:$TAG $IMAGE_NAME:$TAG"
+                sh "docker push $IMAGE_NAME:$TAG"
             }
         }
 
