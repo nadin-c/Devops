@@ -21,7 +21,7 @@ pipeline {
             steps {
                 echo "Building Docker image..."
                 sh 'chmod +x Build.sh'
-                sh './Build.sh'
+                sh './build.sh'
             }
         }
 
@@ -46,7 +46,7 @@ pipeline {
             steps {
                 echo "Deploying Docker container..."
                 sh 'chmod +x Deploy.sh'
-                sh './Deploy.sh'
+                sh './deploy.sh'
             }
         }
     }
