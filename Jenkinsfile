@@ -13,7 +13,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 echo "Cloning GitHub repository..."
-                git branch:'main', uri:'https://github.com/nadin-c/Devops.git'  // Replace with your repo URL
+                git branch:'main', url:'https://github.com/nadin-c/Devops.git'  // Replace with your repo URL
             }
         }
 
